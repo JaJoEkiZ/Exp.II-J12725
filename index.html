@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EXP.II</title>
     <style>
+      @font-face {
+        font-family: 'Text';
+        src: url('fonts/COUR.TTF') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'VCR';
+        src: url('fonts/VCR_OSD_MONO_1.001.TTF') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
         :root {
             --primary: #000000;
             --success: #2ecc71;
@@ -30,11 +43,12 @@
         }
 
         .container {
+            
             width: 100%;
             max-width: 250px;
             background: rgb(81, 255, 0);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(68, 241, 0, 0.411);
             overflow: hidden;
         }
 
@@ -43,6 +57,7 @@
         }
 
         .card-title {
+            font-family: 'VCR', sans-serif;
             color: var(--dark);
             font-size: 1.5rem;
             text-align: center;
@@ -50,13 +65,15 @@
         }
 
         .card-description {
-            color: #7f8c8d;
+            color: #09ff00;
+           
             text-align: center;
             margin-bottom: 30px;
             font-size: 0.95rem;
         }
 
         .input-group {
+            font-family: 'VCR', sans-serif;
             position: relative;
             margin-bottom: 25px;
         }
@@ -70,6 +87,8 @@
         }
 
         .code-input {
+            font-family: 'VCR', sans-serif;
+            color: #09ff00;
             background: #1a252f;
             width: 100%;
             padding: 15px;
@@ -89,21 +108,23 @@
 
         .input-hint {
             font-size: 0.8rem;
-            color: #95a5a6;
+            color: #09ff00;
             margin-top: 8px;
         }
 
         .validate-btn {
+            font-family: 'Text', sans-serif;
             width: 100%;
             padding: 15px;
             background-color: var(--primary);
             color: rgb(60, 255, 0);
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 1.5rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            letter-spacing: 4px;
         }
 
         .validate-btn:hover {
@@ -136,23 +157,23 @@
             visibility: visible;
         }
 
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.3s;
-        }
+.modal-content {
+    background-color: #09ff00; /* Fondo del modal */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+}
 
         .modal.active .modal-content {
             transform: translateY(0);
         }
 
         .modal-title {
-            color: var(--dark);
+            color: #09ff00;
             margin-bottom: 20px;
             font-size: 1.3rem;
         }
@@ -161,7 +182,7 @@
             width: 200px;
             height: 200px;
             margin: 0 auto 20px;
-            background-color: #f8f9fa;
+            background-color: #09ff00;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -221,6 +242,8 @@
             }
             
             .code-input {
+                font-family: 'VCR', sans-serif;
+                color: #09ff00;
                 padding: 12px;
                 font-size: 1rem;
             }
@@ -229,8 +252,15 @@
                 padding: 12px;
             }
             
-            .modal-content {
-                padding: 20px;
+          .modal-content {
+            background-color: #09ff00; /* Fondo del modal */
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s;
             }
             
             .qr-code {
