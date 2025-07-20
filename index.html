@@ -35,23 +35,21 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    body {
-        background-color: var(--primary);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-    }
+body {
+    background-color: #000000;
+    min-height: 100vh;
+    padding: 20px;
+}
 
-    .container {
-        width: 100%;
-        max-width: 250px;
-        background: var(--qr-bg);
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
+.container {
+    max-width: 250px;
+    margin: 0 auto; /* Centra horizontalmente */
+    margin-top: 20px; /* Ajusta este valor para que esté cerca del borde superior */
+    background: rgb(81, 255, 0);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
 
     .card {
         padding: 30px;
@@ -164,7 +162,7 @@
         width: 90%;
         max-width: 350px;
         text-align: center;
-        transform: translateY(20px);
+        transform: translateX(300px);
         transition: transform 0.3s;
     }
 
