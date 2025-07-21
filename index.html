@@ -334,11 +334,11 @@
     </div>
 
 <script>
-    // Códigos válidos predefinidos (comentados por defecto)
+    // Códigos válidos predefinidos
     const validCodes = {
-        //'1011': 'images/qr1.svg',
-        //'0010': 'images/qr2.svg',
-        // '1100': 'images/qr3.svg'
+        '1010': 'images/qr1.svg',
+        '0101': 'images/qr2.svg',
+        '1100': 'images/qr3.svg'
     };
 
     // Contadores
@@ -361,6 +361,20 @@
     const errorMessage = document.getElementById('errorMessage');
     const qrDisplay = document.getElementById('qrDisplay');
     const validCodeSpan = document.getElementById('validCode');
+
+    // Crear el elemento de audio
+    const audio = new Audio('assets/DigitalDataReadout2.mp3'); // Asegúrate de tener este archivo en la carpeta 'assets/'
+    audio.volume = 0; // Inicia en volumen 0
+
+    // Función para ajustar el volumen del audio
+    function adjustVolume() {
+        const maxVolume = 1.0;
+        const volume = correctCount / totalValid;
+        audio.volume = Math.min(volume, maxVolume);
+    }
+
+    // Guardar los códigos ya usados
+    const usedCodes = new Set();
 
     // Validar formato del input en tiempo real
     codeInput.addEventListener('input', function(e) {
@@ -401,18 +415,34 @@
             return;
         }
 
-        // Comprobar si el código es válido
-        if (validCodes.hasOwnProperty(code)) {
+        // Verificar si el código es válido y no ha sido usado antes
+        if (validCodes.hasOwnProperty(code) && !usedCodes.has(code)) {
+            // Añadir el código a los usados
+            usedCodes.add(code);
+
             // Incrementar el contador de aciertos
             correctCount++;
             correctDisplay.textContent = correctCount;
+
+            // Ajustar el volumen del audio
+            adjustVolume();
+
+            // Reproducir el audio
+            audio.play().catch(() => {
+                console.log("No se pudo reproducir el audio");
+            });
 
             // Mostrar modal con éxito
             validCodeSpan.textContent = code;
             qrDisplay.innerHTML = `<img src="${validCodes[code]}" alt="Código QR para ${code}">`;
             qrModal.classList.add('active');
         } else {
-            showError('Incorrecto. Vuelva a interpretar');
+            // Si el código ya fue usado o no es válido
+            if (usedCodes.has(code)) {
+                showError('Este código ya fue usado.');
+            } else {
+                showError('Incorrecto. Vuelva a interpretar');
+            }
         }
     }
 
