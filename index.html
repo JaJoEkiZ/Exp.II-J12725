@@ -74,6 +74,19 @@
         text-align: center;
         margin-bottom: 20px;
     }
+    
+        .card-title3 {
+        font-family: 'VCR', sans-serif;
+        color: #09ff00;
+        font-size: 5rem;
+        text-shadow: 
+        -1px -1px 0 #000000, 
+         5px -1px 0 #000000,
+        -1px 5px 0 #000000,
+         5px 5px 0 #000000;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
     .card-description {
         border-radius: 0;
@@ -283,6 +296,8 @@
 </style>
 </head>
 <body>
+    <h1 class="card-title3">EXP.II</h1>
+    <p class="card-title" style="color: #09ff00;text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000">(Documentación)</p>
     <div class="container">
         <div class="card">
             <h1 class="card-title">INSERTAR CÓDIGO</h1>
@@ -299,11 +314,12 @@
         </div>
     </div>
         <div class="container">
-        <div class="card">
-            <h1 class="card-title">DOCUMENTOS LIBERADOS</h1>
-            <h2 class="card-title2">0/0</h2>
-                       
-
+            <div class="card">
+                <h1 class="card-title">DOCUMENTOS LIBERADOS</h1>
+                <div class="card-title2 justify-center items-center text-2xl font-bold">
+                    <span class="card-title2" id="correctCount">0</span>/<span class="card-title2" id="totalValid">0</span>
+                </div>
+            </div>
         </div>
     </div>
    
@@ -317,91 +333,97 @@
         </div>
     </div>
 
-    <script>
-        // Códigos válidos predefinidos con sus respectivos QRs
-        const validCodes = {
-            //'1011': ' images/qr1.svg',
-            //'0010': ' images/qr2.svg',
-            //'1100': ' images/qr3.svg'
-        };
+<script>
+    // Códigos válidos predefinidos (comentados por defecto)
+    const validCodes = {
+        //'1011': 'images/qr1.svg',
+        //'0010': 'images/qr2.svg',
+        // '1100': 'images/qr3.svg'
+    };
 
-        // Elementos del DOM
-        const codeInput = document.getElementById('codeInput');
-        const validateBtn = document.getElementById('validateBtn');
-        const qrModal = document.getElementById('qrModal');
-        const closeModal = document.getElementById('closeModal');
-        const errorMessage = document.getElementById('errorMessage');
-        const qrDisplay = document.getElementById('qrDisplay');
-        const validCodeSpan = document.getElementById('validCode');
+    // Contadores
+    let correctCount = 0;
+    let totalValid = Object.keys(validCodes).length;
 
-        // Validar formato del input en tiempo real
-        codeInput.addEventListener('input', function(e) {
-            // Remover cualquier mensaje de error previo
-            errorMessage.style.display = 'none';
+    // Actualizar el contador en el DOM
+    const correctDisplay = document.getElementById('correctCount');
+    const totalDisplay = document.getElementById('totalValid');
 
-            // Validar que solo contenga 0 y 1
-            const value = e.target.value;
-            if (/[^01]/.test(value)) {
-                e.target.value = value.replace(/[^01]/g, '');
-            }
-        });
+    // Mostrar el contador inicial
+    correctDisplay.textContent = correctCount;
+    totalDisplay.textContent = totalValid;
 
-        // Validar el código cuando se presiona el botón
-        validateBtn.addEventListener('click', validateCode);
+    // Elementos del DOM
+    const codeInput = document.getElementById('codeInput');
+    const validateBtn = document.getElementById('validateBtn');
+    const qrModal = document.getElementById('qrModal');
+    const closeModal = document.getElementById('closeModal');
+    const errorMessage = document.getElementById('errorMessage');
+    const qrDisplay = document.getElementById('qrDisplay');
+    const validCodeSpan = document.getElementById('validCode');
 
-        // También validar al presionar Enter
-        codeInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                validateCode();
-            }
-        });
+    // Validar formato del input en tiempo real
+    codeInput.addEventListener('input', function(e) {
+        errorMessage.style.display = 'none';
+        const value = e.target.value;
+        if (/[^01]/.test(value)) {
+            e.target.value = value.replace(/[^01]/g, '');
+        }
+    });
 
-        // Cerrar el modal
-        closeModal.addEventListener('click', function() {
-            qrModal.classList.remove('active');
-            codeInput.value = '';
-        });
+    // Validar el código cuando se presiona el botón
+    validateBtn.addEventListener('click', validateCode);
 
-        function validateCode() {
-            const code = codeInput.value.trim();
+    // También validar al presionar Enter
+    codeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            validateCode();
+        }
+    });
 
-            // Validaciones básicas
-            if (code.length !== 4) {
-                showError('Faltan Unidades');
-                return;
-            }
+    // Cerrar el modal
+    closeModal.addEventListener('click', function() {
+        qrModal.classList.remove('active');
+        codeInput.value = '';
+    });
 
-            if (!/^[01]+$/.test(code)) {
-                showError('Solo 0 y 1');
-                return;
-            }
+    function validateCode() {
+        const code = codeInput.value.trim();
 
-            // Comprobar si el código es válido
-            if (validCodes.hasOwnProperty(code)) {
-                // Mostrar modal con éxito
-                validCodeSpan.textContent = code;
-
-                // Generar el QR correspondiente
-                qrDisplay.innerHTML = `<img src="${validCodes[code]}" alt="Código QR para ${code}">`;
-
-                qrModal.classList.add('active');
-            } else {
-                showError('Incorrecto. Vuelva a interpretar');
-            }
+        // Validaciones básicas
+        if (code.length !== 4) {
+            showError('Faltan Unidades');
+            return;
         }
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-
-            // Resaltar el input con error
-            codeInput.style.borderColor = 'var(--error)';
-
-            // Quitar el resaltado después de 2 segundos
-            setTimeout(() => {
-                codeInput.style.borderColor = '#dfe6e9';
-            }, 2000);
+        if (!/^[01]+$/.test(code)) {
+            showError('Solo 0 y 1');
+            return;
         }
-    </script>
+
+        // Comprobar si el código es válido
+        if (validCodes.hasOwnProperty(code)) {
+            // Incrementar el contador de aciertos
+            correctCount++;
+            correctDisplay.textContent = correctCount;
+
+            // Mostrar modal con éxito
+            validCodeSpan.textContent = code;
+            qrDisplay.innerHTML = `<img src="${validCodes[code]}" alt="Código QR para ${code}">`;
+            qrModal.classList.add('active');
+        } else {
+            showError('Incorrecto. Vuelva a interpretar');
+        }
+    }
+
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        codeInput.style.borderColor = 'var(--error)';
+        setTimeout(() => {
+            codeInput.style.borderColor = '#dfe6e9';
+        }, 2000);
+    }
+</script>
 </body>
 </html>
