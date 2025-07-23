@@ -336,8 +336,8 @@
 <script>
     // Códigos válidos predefinidos
     const validCodes = {
-       /* '1010': 'images/qr1.svg',
-        '0101': 'images/qr2.svg',
+        //'1010': 'images/Qr_1.png',
+        /*'0101': 'images/qr2.svg',
         '1100': 'images/qr3.svg'*/
     };
 
@@ -363,7 +363,8 @@
     const validCodeSpan = document.getElementById('validCode');
 
     // Crear el elemento de audio
-    const audio = new Audio('assets/DigitalDataReadout2.mp3'); // Asegúrate de tener este archivo en la carpeta 'assets/'
+    const audio = new Audio('assets/DigitalRing.mp3'); // Asegúrate de tener este archivo en la carpeta 'assets/'
+    audio.loop = true; // Reproducir en bucle
     audio.volume = 0; // Inicia en volumen 0
 
     // Función para ajustar el volumen del audio
@@ -421,8 +422,10 @@
             usedCodes.add(code);
 
             // Incrementar el contador de aciertos
-            correctCount++;
-            correctDisplay.textContent = correctCount;
+            if (correctCount < totalValid) {
+                correctCount++;
+                correctDisplay.textContent = correctCount;
+            }
 
             // Ajustar el volumen del audio
             adjustVolume();
