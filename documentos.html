@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EXP.II - Documentos</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
 
 <div class="container2">
     <div class="card">
-        <h1 class="card-title">DOCUMENTO</h1>
+        <h1 class="card-title">DOCUMENTO_<span id="documentNumber"></span></h1>
         <!-- Contenedor con aspecto fijo para el video -->
         <div class="video-container-wrapper">
             <div id="video-container">
@@ -24,47 +25,52 @@
     </div>
 </div>
 
-    <script>
-        // URLs de los videos asociados a cada código
-        // Debe coincidir con los definidos en index.html
-        const videoUrls = {
-            '1010': 'https://www.youtube.com/embed/5V2bJHGaq8w', // Ejemplo Video 1
-            '0101': 'https://www.youtube.com/embed/vdGlBZH-ML0',       // Ejemplo Video 2
-            '1100': 'https://www.youtube.com/embed/xyz789'        // Ejemplo Video 3
-            // Agrega más códigos y videos aquí
-        };
+<script>
+    // URLs de los videos asociados a cada código
+    const videoUrls = {
+        '1010': 'https://www.youtube.com/embed/5V2bJHGaq8w',
+        '0101': 'https://www.youtube.com/embed/vdGlBZH-ML0',
+        '1100': 'https://www.youtube.com/embed/xyz789'
+    };
 
-        // Obtener el código de la URL (query string)
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+    // Mapeo de códigos a números de documento
+    const codeToNumber = {
+        '1010': '1',
+        '0101': '2',
+        '1100': '3'
+    };
 
-        const videoContainerDiv = document.getElementById('video-container');
+    // Obtener el código de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-        if (code && videoUrls[code]) {
-            // Si el código existe y tiene un video asociado, mostrarlo
-            const iframe = document.createElement('iframe');
-            iframe.src = videoUrls[code];
-            iframe.title = `Video para código ${code}`;
-            iframe.width = '100%';
-            iframe.height = '300px'; // Ajusta la altura según tus necesidades
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '8px';
-            // Aplicar estilos del tema si es necesario, o usar clases de styles.css
-            // iframe.className = 'video-iframe'; 
-            videoContainerDiv.appendChild(iframe);
-        } else {
-            // Si no hay código o no es válido, mostrar un mensaje de error
-            const errorMsg = document.createElement('p');
-            errorMsg.className = 'message error'; // Reutiliza la clase de error de styles.css
-            errorMsg.textContent = 'Código no válido o video no encontrado.';
-            errorMsg.style.display = 'block'; // Forzar la visibilidad
-            videoContainerDiv.appendChild(errorMsg);
+    const documentNumberElement = document.getElementById('documentNumber');
+    const videoContainerDiv = document.getElementById('video-container');
 
-            // Opcional: puedes redirigir a otra página después de un tiempo
-            // setTimeout(() => { window.location.href = 'index.html'; }, 3000);
+    if (code && videoUrls[code]) {
+        // Actualizar el número del documento en el título
+        const documentNumber = codeToNumber[code];
+        if (documentNumberElement && documentNumber) {
+            documentNumberElement.textContent = documentNumber;
         }
-    </script>
+
+        // Mostrar el video
+        const iframe = document.createElement('iframe');
+        iframe.src = videoUrls[code].trim(); // trim() elimina espacios
+        iframe.title = `Video para código ${code}`;
+        // El CSS del contenedor responsive se encarga del tamaño
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
+        // El CSS del contenedor se encarga del estilo
+        videoContainerDiv.appendChild(iframe);
+    } else {
+        // Mostrar mensaje de error
+        const errorMsg = document.createElement('p');
+        errorMsg.className = 'message error';
+        errorMsg.textContent = 'Código no válido o video no encontrado.';
+        errorMsg.style.display = 'block';
+        videoContainerDiv.appendChild(errorMsg);
+    }
+</script>
 </body>
 </html>
