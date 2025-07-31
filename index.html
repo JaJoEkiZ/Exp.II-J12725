@@ -52,11 +52,11 @@
         '0110': {
             url: 'https://www.youtube.com/embed/5V2bJHGaq8w',
             title: 'QR_1'
-        }/*,
-        '0101': {
+        },
+        '0111': {
             url: 'https://www.youtube.com/embed/vdGlBZH-ML0',
             title: 'QR_2'
-        },
+        }/*,
         '1100': {
             url: 'https://www.youtube.com/embed/',
             title: 'QR_3'
@@ -89,9 +89,13 @@
     const validCodeSpan = document.getElementById('validCode');
 
     // Crear el elemento de audio
-    const audio = new Audio('assets/DigitalRing.mp3');
+    const audio = new Audio('assets/experimento_mezcla.mp3');
     audio.loop = true;
     audio.volume = 0;
+    
+    const audio2 = new Audio('assets/DigitalRing.mp3');
+    audio2.loop = true;
+    audio2.volume = 0;
 
     // Función para ajustar el volumen del audio
     function adjustVolume() {
@@ -99,10 +103,16 @@
         if (totalValid > 0) {
             const volume = correctCount / totalValid;
             audio.volume = Math.min(volume, maxVolume);
+            audio2.volume = Math.min(volume, maxVolume);
         } else {
             audio.volume = 0;
+            audio2.volume = 0;
         }
     }
+ 
+ 
+    
+
 
     // Guardar los códigos ya usados para evitar repetirlos
     const usedCodes = new Set();
@@ -164,6 +174,9 @@
 
             // Reproducir el audio
             audio.play().catch(() => {
+                console.log("No se pudo reproducir el audio");
+            });
+            audio2.play().catch(() => {
                 console.log("No se pudo reproducir el audio");
             });
 
