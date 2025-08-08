@@ -46,7 +46,8 @@
     </div>
 
 <script>
-    // Códigos válidos predefinidos
+    // --- Códigos válidos predefinidos ---
+    // Ahora cada código tiene un objeto con 'url' y 'title'
     const validCodes = {
         '0110': {
             url: 'https://www.youtube.com/embed/5V2bJHGaq8w',
@@ -59,6 +60,10 @@
         '0000': {
             url: 'https://www.youtube.com/embed/p-7MLQvYM30',
             title: 'QR_3'
+        },
+        '0100': {
+            url: 'https://www.youtube.com/embed/68YZ0WKrJlM',
+            title: 'QR_4'
         }
         // Agrega más códigos, videos y títulos aquí
     };
@@ -67,13 +72,17 @@
     const codeToAudioMap = {
         '0110': [1], // QR_1 reproduce audio1
         '0111': [2], // QR_2 reproduce audio2
-        '0000': [3]  // QR_3 reproduce audio3
+        '0000': [3], // QR_3 reproduce audio3
+        '0100': [4]  // QR_4 reproduce audio4
         // Agrega mapeos para más códigos si es necesario
     };
 
+    // Calcular totalValid inmediatamente después de definir validCodes
+    let totalValid = Object.keys(validCodes).length; // Debe ser 4 si los 4 códigos están definidos arriba
+    // -------------------------------
+
     // Contadores
     let correctCount = 0;
-    let totalValid = Object.keys(validCodes).length;
 
     // Actualizar el contador en el DOM
     const correctDisplay = document.getElementById('correctCount');
@@ -93,19 +102,28 @@
 
     // --- Crear elementos de audio ---
     const audio1 = new Audio('assets/DigitalRing.mp3');
-    audio1.loop = true;
-    audio1.volume = 0;
-
     const audio2 = new Audio('assets/experimento_mezcla.mp3');
-    audio2.loop = true;
-    audio2.volume = 0;
-
     const audio3 = new Audio('assets/spaceDistor.mp3');
-    audio3.loop = true;
-    audio3.volume = 0;
+    const audio4 = new Audio('assets/4.mp3');
 
     // Array para manejar los audios fácilmente
-    const allAudios = [audio1, audio2, audio3];
+    const allAudios = [audio1, audio2, audio3, audio4];
+
+    // Configurar cada audio para asegurar loop y volumen inicial
+    allAudios.forEach((audio, index) => {
+        // Listener para cuando el audio puede reproducirse completamente
+        const setupAudio = () => {
+            audio.loop = true; // Forzar loop
+            audio.volume = 0;  // Volumen inicial
+            console.log(`Audio ${index + 1} listo: loop=${audio.loop}, volume=${audio.volume}`);
+            // Eliminar el listener para evitar ejecuciones múltiples
+            audio.removeEventListener('canplaythrough', setupAudio);
+        };
+
+        audio.addEventListener('canplaythrough', setupAudio);
+        // Iniciar la carga del audio
+        audio.load();
+    });
     // -------------------------------
 
     // Función para ajustar el volumen del audio
@@ -117,8 +135,11 @@
         }
         // Ajustar volumen de todos los audios definidos
         allAudios.forEach(a => {
+            // Asegurar loop esté activo al ajustar volumen
+            a.loop = true;
             a.volume = Math.min(volume, maxVolume);
         });
+        console.log(`Volumen ajustado a ${(volume * 100).toFixed(1)}%`);
     }
 
     // Guardar los códigos ya usados para evitar repetirlos
@@ -177,37 +198,31 @@
             adjustVolume();
 
             // --- Reproducir audios específicos del código (SIN pausar los demás) ---
-            // 1. Obtener los índices de los audios a reproducir para este código
             const audiosToPlayIndices = codeToAudioMap[code] || [];
+            console.log(`Intentando reproducir audios para código ${code}:`, audiosToPlayIndices);
 
-            // 2. Reproducir los audios correspondientes
             audiosToPlayIndices.forEach(index => {
-                // Asegurarse de que el índice sea válido (1, 2 o 3)
                 if (index >= 1 && index <= allAudios.length) {
-                    // Obtener el audio correspondiente (index - 1 porque el array es 0-based)
                     const audioToPlay = allAudios[index - 1];
 
-                    // Verificar si el audio ya se está reproduciendo
-                    // Esta comprobación no es 100% fiable en todos los navegadores, pero es un buen intento
-                    // Una forma más robusta es usar una bandera personalizada si es necesario.
-                    if (audioToPlay.paused) {
-                         // Si está pausado, intentamos reproducirlo desde el inicio
-                        audioToPlay.currentTime = 0;
-                        audioToPlay.play().catch((e) => {
-                            console.log(`No se pudo iniciar la reproducción del audio ${index}:`, e);
-                        });
-                    } else {
-                        // Si ya se está reproduciendo y en loop, no hacemos nada.
-                        // Esto mantiene el loop activo sin interrupciones.
-                        console.log(`El audio ${index} ya se está reproduciendo.`);
-                    }
+                    // Forzar loop y reiniciar justo antes de reproducir
+                    audioToPlay.loop = true;
+                    audioToPlay.currentTime = 0;
+
+                    audioToPlay.play().then(() => {
+                        console.log(`Audio ${index} iniciado correctamente para código ${code}.`);
+                    }).catch((e) => {
+                        console.error(`Error al reproducir audio ${index} para código ${code}:`, e);
+                    });
                 }
             });
             // ---------------------------------------------
 
             // --- Generar QR dinámico ---
-            // Nota: Eliminé los espacios extra en baseUrl
-            const baseUrl = 'https://exp-ii-j12725.onrender.com/';
+            // Calcular baseUrl automáticamente para mayor robustez
+            const baseUrl = window.location.origin + '/';
+            console.log("Base URL utilizada para QR:", baseUrl);
+
             const destinationUrl = `${baseUrl}documentos.html?code=${encodeURIComponent(code)}`;
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(destinationUrl)}&color=09ff00&bgcolor=000000`;
             // --------------------------
